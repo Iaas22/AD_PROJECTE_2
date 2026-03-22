@@ -144,4 +144,10 @@ public class ProductController {
     public ResponseEntity<?> top10NewByRating() {
     return ResponseEntity.ok(productService.top10NewByRating());
 }
+
+
+    @GetMapping("/search/paginated")
+    public ResponseEntity<?> getProductsPaginated(@RequestParam(defaultValue = "0") int page) {
+    return ResponseEntity.ok(productService.getProductsPaginated(page));
+}
 }
