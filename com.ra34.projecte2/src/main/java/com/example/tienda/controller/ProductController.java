@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.tienda.model.Product;
 import com.example.tienda.service.ProductService;
+import com.example.tienda.model.Condition;
 
 @RestController
 @RequestMapping("/api/products")
@@ -113,5 +114,17 @@ public class ProductController {
     public ResponseEntity<?> deleteLogic(@PathVariable Long id) {
     return ResponseEntity.ok(productService.deleteLogic(id));
 }
+
+    
+    @GetMapping("/search/condition")
+    public ResponseEntity<?> searchByCondition(@RequestParam Condition condition) {
+    return ResponseEntity.ok(productService.searchByCondition(condition));
+}
+
+    @GetMapping("/search/rating-order")
+    public ResponseEntity<?> orderByRating(@RequestParam String order) {
+    return ResponseEntity.ok(productService.orderByRating(order));
+}
+
 
 }
