@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.tienda.dto.ProductDTO;
@@ -17,6 +18,7 @@ import com.example.tienda.repository.ProductRepository;
 
 import jakarta.transaction.Transactional;
 
+@Service
 public class ProductService {
     
     @Autowired

@@ -41,6 +41,7 @@ public class Product {
     private BigDecimal rating;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "product_condition")
     private Condition condition;
 
     @Column(nullable = false)
