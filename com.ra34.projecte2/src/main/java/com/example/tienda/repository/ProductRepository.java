@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.tienda.model.Product;
+import com.example.tienda.model.Condition;
 
 
 @Repository
@@ -40,6 +41,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.status = true")
     List<Product> findAllActive();
 
+    // Query Method: filtra per condition i status=true
+    List<Product> findByConditionAndStatusTrue(Condition condition);
+
+// Query Method: ordena per rating ASC o DESC (dos mètodes)
+    List<Product> findByStatusTrueOrderByRatingAsc();
+    List<Product> findByStatusTrueOrderByRatingDesc();  
 
 
 }

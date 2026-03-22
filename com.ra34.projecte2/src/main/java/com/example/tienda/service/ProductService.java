@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.tienda.dto.ProductDTO;
@@ -17,6 +18,7 @@ import com.example.tienda.repository.ProductRepository;
 
 import jakarta.transaction.Transactional;
 
+@Service
 public class ProductService {
     
     @Autowired
@@ -189,5 +191,49 @@ public int loadCSV(MultipartFile file) throws Exception {
             .toList();
     }  
 
+
+    public ProductDTO updatePrice(Long id, Double price) {
+    Product p = productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Producte no trobat"));
+
+    p.setPrice(BigDecimal.valueOf(price));
+    return toDTO(productRepository.save(p));
+}
+    public void deleteProduct(Long id) {
+    productRepository.deleteById(id);
+}
+
+    public ProductDTO deleteLogic(Long id) {
+    Product p = productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Producte no trobat"));
+
+    p.setStatus(false);
+    return toDTO(productRepository.save(p));
+}
+
+ 
+    public List<ProductDTO> searchByCondition(Condition condition) {
+    return productRepository
+            .findByConditionAndStatusTrue(condition)
+            .stream()
+            .map(this::toDTO)
+            .toList();
+}
+
+    public List<ProductDTO> orderByRating(String order) {
+    List<Product> products;
+
+    if (order.equalsIgnoreCase("asc")) {
+        products = productRepository.findByStatusTrueOrderByRatingAsc();
+    } else if (order.equalsIgnoreCase("desc")) {
+        products = productRepository.findByStatusTrueOrderByRatingDesc();
+    } else {
+        throw new RuntimeException("El paràmetre order ha de ser 'asc' o 'desc'");
+    }
+
+    return products.stream()
+            .map(this::toDTO)
+            .toList();
+}
 }
 
