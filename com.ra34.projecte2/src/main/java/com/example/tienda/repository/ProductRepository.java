@@ -15,6 +15,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findByName(String name);
 
+    List<Product> findByStatusTrue();
+
     List<Product> findByPriceBetween(Double min, Double max);
 
     @Query("SELECT p FROM Product p WHERE p.stock > :minStock")
