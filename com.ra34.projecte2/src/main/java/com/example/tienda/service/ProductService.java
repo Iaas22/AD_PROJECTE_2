@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +16,7 @@ import com.example.tienda.dto.ProductDTO;
 import com.example.tienda.model.Condition;
 import com.example.tienda.model.Product;
 import com.example.tienda.repository.ProductRepository;
+import org.springframework.data.domain.Pageable;
 
 import jakarta.transaction.Transactional;
 
@@ -264,6 +266,15 @@ public int loadCSV(MultipartFile file) throws Exception {
 
     public List<ProductDTO> top10NewByRating() {
     return productRepository.findTop10NewByRating()
+            .stream()
+            .map(this::toDTO)
+            .toList();
+}
+
+   
+    public List<ProductDTO> getProductsPaginated(int page) {
+    Pageable pageable = PageRequest.of(page, 5);
+    return productRepository.findActiveProducts(pageable)
             .stream()
             .map(this::toDTO)
             .toList();
