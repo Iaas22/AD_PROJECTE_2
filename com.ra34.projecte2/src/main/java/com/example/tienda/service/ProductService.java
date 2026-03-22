@@ -1,12 +1,20 @@
 package com.example.tienda.service;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.tienda.dto.ProductDTO;
+import com.example.tienda.model.Condition;
 import com.example.tienda.model.Product;
 import com.example.tienda.repository.ProductRepository;
+
+import jakarta.transaction.Transactional;
 
 public class ProductService {
     
@@ -62,5 +70,56 @@ public class ProductService {
         dto.setCondition(p.getCondition());
         return dto;
     }
+
+    @Transactional
+public int loadCSV(MultipartFile file) throws Exception {
+
+    if (file.isEmpty()) {
+        throw new Exception("L'Arxiu esta buit");
+    }
+
+    List<Product> products = new ArrayList<>();
+
+    try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+
+        String line;
+        int lineNumber = 0;
+
+        while ((line = br.readLine()) != null) {
+            lineNumber++;
+
+            // Saltar cabecera si existe
+            if (lineNumber == 1 && line.toLowerCase().contains("name")) {
+                continue;
+            }
+
+            String[] fields = line.split(",");
+
+            if (fields.length < 6) {
+                throw new Exception("Error en línea " + lineNumber + ": format incorrecte");
+            }
+
+            try {
+                Product p = new Product();
+                p.setName(fields[0]);
+                p.setDescription(fields[1]);
+                p.setStock(Integer.parseInt(fields[2]));
+                p.setPrice(new BigDecimal(fields[3]));
+                p.setRating(new BigDecimal(fields[4]));
+                p.setCondition(Condition.valueOf(fields[5].toUpperCase()));
+                p.setStatus(true);
+
+                products.add(p);
+
+            } catch (Exception e) {
+                throw new Exception("Error en línea " + lineNumber + ": " + e.getMessage());
+            }
+        }
+    }
+
+    productRepository.saveAll(products);
+
+    return products.size();
+}
 }
 
