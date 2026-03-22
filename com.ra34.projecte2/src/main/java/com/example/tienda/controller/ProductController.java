@@ -1,5 +1,7 @@
 package com.example.tienda.controller;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,13 +57,44 @@ public class ProductController {
 
     // Carga de CSV
     @PostMapping("/upload")
-public ResponseEntity<?> uploadCSV(@RequestParam("file") MultipartFile file) {
-    try {
-        int inserted = productService.loadCSV(file);
-        return ResponseEntity.ok("Registres inserits: " + inserted);
-    } catch (Exception e) {
-        return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+    public ResponseEntity<?> uploadCSV(@RequestParam("file") MultipartFile file) {
+       try {
+          int inserted = productService.loadCSV(file);
+          return ResponseEntity.ok("Registres inserits: " + inserted);
+        } catch (Exception e) {
+          return ResponseEntity.badRequest().body("Error: " + e.getMessage());
     }
 }
+
+    @GetMapping("/search/name")
+    public ResponseEntity<?> searchByName(@RequestParam String prefix) {
+       return ResponseEntity.ok(productService.searchByNamePrefix(prefix));
+    }
+
+    @GetMapping("/search/order")
+    public ResponseEntity<?> orderByPrice(@RequestParam String order) {
+       return ResponseEntity.ok(productService.orderByPrice(order));
+    }
+
+
+    @GetMapping("/search/filter")
+    public ResponseEntity<?> filterProducts(
+        @RequestParam BigDecimal min,
+        @RequestParam BigDecimal max,
+        @RequestParam String camp,
+        @RequestParam String order,
+        @RequestParam int limit) {
+
+       return ResponseEntity.ok(
+            productService.filterProducts(min, max, camp, order, limit)
+        );
+    }
+
+
+    @GetMapping("/search/top5")
+      public ResponseEntity<?> top5QualityPrice() {
+        return ResponseEntity.ok(productService.top5QualityPrice());
+    }
+
 
 }
