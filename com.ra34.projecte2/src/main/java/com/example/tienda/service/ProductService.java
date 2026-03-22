@@ -235,5 +235,38 @@ public int loadCSV(MultipartFile file) throws Exception {
             .map(this::toDTO)
             .toList();
 }
+
+ 
+    public List<ProductDTO> filterByRating(BigDecimal min, BigDecimal max, String camp, String order, int limit) {
+
+    List<Product> products = productRepository.filterByRatingRange(min, max);
+
+    Comparator<Product> comparator;
+
+    switch (camp.toLowerCase()) {
+        case "price" -> comparator = Comparator.comparing(Product::getPrice);
+        case "rating" -> comparator = Comparator.comparing(Product::getRating);
+        case "name" -> comparator = Comparator.comparing(Product::getName);
+        default -> throw new RuntimeException("Camp no vàlid: " + camp);
+    }
+
+    if (order.equalsIgnoreCase("desc")) {
+        comparator = comparator.reversed();
+    }
+
+    return products.stream()
+            .sorted(comparator)
+            .limit(limit)
+            .map(this::toDTO)
+            .toList();
+}
+
+
+    public List<ProductDTO> top10NewByRating() {
+    return productRepository.findTop10NewByRating()
+            .stream()
+            .map(this::toDTO)
+            .toList();
+}
 }
 
