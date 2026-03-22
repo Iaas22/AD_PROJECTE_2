@@ -93,14 +93,13 @@ public int loadCSV(MultipartFile file) throws Exception {
         while ((line = br.readLine()) != null) {
             lineNumber++;
 
-            // Saltar cabecera si existe
             if (lineNumber == 1 && line.toLowerCase().contains("name")) {
                 continue;
             }
 
             String[] fields = line.split(",");
 
-            if (fields.length < 6) {
+            if (fields.length < 7) {
                 throw new Exception("Error en línea " + lineNumber + ": format incorrecte");
             }
 
@@ -112,7 +111,7 @@ public int loadCSV(MultipartFile file) throws Exception {
                 p.setPrice(new BigDecimal(fields[3]));
                 p.setRating(new BigDecimal(fields[4]));
                 p.setCondition(Condition.valueOf(fields[5].toUpperCase()));
-                p.setStatus(true);
+                p.setStatus(Boolean.parseBoolean(fields[6]));
 
                 products.add(p);
 
