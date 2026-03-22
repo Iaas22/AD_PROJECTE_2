@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,5 +122,72 @@ public int loadCSV(MultipartFile file) throws Exception {
 
     return products.size();
 }
+
+  public List<ProductDTO> searchByNamePrefix(String prefix) {
+      return productRepository
+            .findByNameStartingWithIgnoreCaseAndStatusTrue(prefix)
+            .stream()
+            .map(this::toDTO)
+            .toList();
+  }
+
+  public List<ProductDTO> orderByPrice(String order) {
+
+    List<Product> products;
+
+    if (order.equalsIgnoreCase("asc")) {
+        products = productRepository.findByStatusTrueOrderByPriceAsc();
+    } else if (order.equalsIgnoreCase("desc")) {
+        products = productRepository.findByStatusTrueOrderByPriceDesc();
+    } else {
+        throw new RuntimeException("El parámetre order ha de ser 'asc' o 'desc'");
+    }
+
+    return products.stream()
+            .map(this::toDTO) 
+            .toList();
+    }
+
+    public List<ProductDTO> filterProducts(BigDecimal min, BigDecimal max, String camp, String order, int limit) {
+
+    List<Product> products = productRepository.filterByPriceRange(min, max);
+
+    Comparator<Product> comparator;
+
+    switch (camp.toLowerCase()) {
+        case "price" -> comparator = Comparator.comparing(Product::getPrice);
+        case "rating" -> comparator = Comparator.comparing(Product::getRating);
+        case "name" -> comparator = Comparator.comparing(Product::getName);
+        default -> throw new RuntimeException("Camp no vàlid: " + camp);
+    }
+
+    if (order.equalsIgnoreCase("desc")) {
+        comparator = comparator.reversed();
+    }
+
+    return products.stream()
+            .sorted(comparator)
+            .limit(limit)
+            .map(this::toDTO)
+            .toList();
+}
+
+    public List<ProductDTO> top5QualityPrice() {
+
+       List<Product> products = productRepository.findAllActive();
+
+       Comparator<Product> comparator = Comparator.comparing(
+            p -> Double.valueOf(
+                    p.getRating().doubleValue() / p.getPrice().doubleValue()
+            )
+        );
+
+        return products.stream()
+            .sorted(comparator.reversed())
+            .limit(5)
+            .map(this::toDTO)
+            .toList();
+    }  
+
 }
 
