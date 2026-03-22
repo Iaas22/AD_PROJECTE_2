@@ -121,5 +121,24 @@ public int loadCSV(MultipartFile file) throws Exception {
 
     return products.size();
 }
+
+    public ProductDTO updatePrice(Long id, Double price) {
+    Product p = productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Producte no trobat"));
+
+    p.setPrice(BigDecimal.valueOf(price));
+    return toDTO(productRepository.save(p));
+}
+    public void deleteProduct(Long id) {
+    productRepository.deleteById(id);
+}
+
+    public ProductDTO deleteLogic(Long id) {
+    Product p = productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Producte no trobat"));
+
+    p.setStatus(false);
+    return toDTO(productRepository.save(p));
+}
 }
 
