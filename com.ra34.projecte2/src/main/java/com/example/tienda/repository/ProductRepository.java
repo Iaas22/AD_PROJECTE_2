@@ -41,12 +41,19 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.status = true")
     List<Product> findAllActive();
 
-    // Query Method: filtra per condition i status=true
     List<Product> findByConditionAndStatusTrue(Condition condition);
 
-// Query Method: ordena per rating ASC o DESC (dos mètodes)
     List<Product> findByStatusTrueOrderByRatingAsc();
     List<Product> findByStatusTrueOrderByRatingDesc();  
+
+    @Query("SELECT p FROM Product p WHERE p.status = true AND p.rating BETWEEN :min AND :max")
+    List<Product> filterByRatingRange(
+    @Param("min") BigDecimal min,
+    @Param("max") BigDecimal max
+);
+
+    @Query("SELECT p FROM Product p WHERE p.status = true AND p.condition = 'NOU' ORDER BY p.rating DESC LIMIT 10")
+    List<Product> findTop10NewByRating();
 
 
 }

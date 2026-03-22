@@ -127,4 +127,21 @@ public class ProductController {
 }
 
 
+    @GetMapping("/search/rating-filter")
+    public ResponseEntity<?> filterByRating(
+        @RequestParam BigDecimal ratingMin,
+        @RequestParam BigDecimal ratingMax,
+        @RequestParam String camp,
+        @RequestParam String order,
+        @RequestParam int limit) {
+
+    return ResponseEntity.ok(
+            productService.filterByRating(ratingMin, ratingMax, camp, order, limit)
+    );
+}
+
+    @GetMapping("/search/top10new")
+    public ResponseEntity<?> top10NewByRating() {
+    return ResponseEntity.ok(productService.top10NewByRating());
+}
 }
