@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.tienda.dto.request.AddUserRolesRequest;
 import com.example.tienda.dto.request.CreateUserRequest;
 import com.example.tienda.dto.request.RemoveUserRolesRequest;
 import com.example.tienda.service.UserService;
@@ -67,5 +68,15 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    // Añade roles al usuario
+    @PostMapping("/{id}/roles")
+    public ResponseEntity<?> addRoles(@PathVariable Long id, @RequestBody AddUserRolesRequest request) {
+        try {
+            return ResponseEntity.ok(userService.addRolesToUser(id, request.getRoleIds()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }
