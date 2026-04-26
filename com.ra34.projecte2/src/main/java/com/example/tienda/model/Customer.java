@@ -1,100 +1,86 @@
 package com.example.tienda.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "products")
+@Table(name = "customer")
 @EntityListeners(AuditingEntityListener.class)
-public class Product {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String description;
-    private Integer stock;
-    private BigDecimal price;
-    private BigDecimal rating;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "product_condition")
-    private Condition condition;
+    private Long customerid;
+
+    @OneToOne(optional = false, cascade= CascadeType.PERSIST)
+    @JoinColumn(name = "userid", referencedColumnName = "userid", nullable = false, unique = true)
+    private User user;
+
+    @Column(name = "firstName")
+    private String firstName;
+    @Column(name = "lastName")
+    private String lastName;
+    private String phone;
     private Boolean status = true;
     @CreatedDate
     private LocalDateTime dataCreated;
     @LastModifiedDate
     private LocalDateTime dataUpdated;
 
-    public Product() {}
-
-    public void setId(Long id) {
-    this.id = id;
-}
+    public Customer() {}
 
     public Long getId() {
-        return id;
+        return customerid;
     }
 
-    public String getName() {
-        return name;
+    public void setId(Long id) {
+        this.customerid = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public User getUser() {
+        return user;
     }
 
-    public String getDescription() {
-        return description;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public Integer getStock() {
-        return stock;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void setStock(Integer stock) {
-        this.stock = stock;
+    public String getLastName() {
+        return lastName;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public String getPhone() {
+        return phone;
     }
 
-    public BigDecimal getRating() {
-        return rating;
-    }
-
-    public void setRating(BigDecimal rating) {
-        this.rating = rating;
-    }
-
-    public Condition getCondition() {
-        return condition;
-    }
-
-    public void setCondition(Condition condition) {
-        this.condition = condition;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Boolean getStatus() {
@@ -120,5 +106,5 @@ public class Product {
     public void setDataUpdated(LocalDateTime dataUpdated) {
         this.dataUpdated = dataUpdated;
     }
-}
 
+}
