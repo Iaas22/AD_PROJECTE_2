@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.tienda.dto.request.AddProductsToOrderRequest;
+import com.example.tienda.dto.request.CreateOrderRequest;
 import com.example.tienda.service.OrderService;
 
 @RestController
@@ -20,7 +21,16 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    // Añade uno o varios productos a una orden existente.
+    @PostMapping
+    public ResponseEntity<?> createOrder(@RequestBody CreateOrderRequest request) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(orderService.createOrder(request));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @PostMapping("/{id}/products")
     public ResponseEntity<?> addProducts(@PathVariable Long id,
             @RequestBody AddProductsToOrderRequest request) {
@@ -32,7 +42,15 @@ public class OrderController {
         }
     }
 
-    // Cancela una orden que este en estado PENDENT.
+    @PutMapping("/{id}/process")
+    public ResponseEntity<?> processOrder(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(orderService.processOrder(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @PutMapping("/{id}/cancel")
     public ResponseEntity<?> cancelOrder(@PathVariable Long id) {
         try {
