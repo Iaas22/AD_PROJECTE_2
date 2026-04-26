@@ -6,9 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.tienda.dto.request.AddAddressesRequest;
 import com.example.tienda.service.CustomerService;
 
 @RestController
@@ -32,5 +35,15 @@ public class CustomerController {
     @GetMapping
     public ResponseEntity<?> getAllCustomers() {
         return ResponseEntity.ok(customerService.getAllCustomers());
+    }
+
+    // Añade una lista de direcciones a un customer
+    @PostMapping("/{id}/addresses")
+    public ResponseEntity<?> addAddresses(@PathVariable Long id, @RequestBody AddAddressesRequest request) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(customerService.addAddressesToCustomer(id, request));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }
