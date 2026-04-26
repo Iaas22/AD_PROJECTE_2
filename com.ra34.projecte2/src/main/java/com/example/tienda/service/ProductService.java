@@ -15,6 +15,7 @@ import com.example.tienda.dto.ProductDTO;
 import com.example.tienda.model.Condition;
 import com.example.tienda.model.Product;
 import com.example.tienda.repository.ProductRepository;
+import org.springframework.data.domain.Pageable;
 
 import jakarta.transaction.Transactional;
 
@@ -191,5 +192,91 @@ public int loadCSV(MultipartFile file) throws Exception {
             .toList();
     }  
 
+
+    public ProductDTO updatePrice(Long id, Double price) {
+    Product p = productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Producte no trobat"));
+
+    p.setPrice(BigDecimal.valueOf(price));
+    return toDTO(productRepository.save(p));
+}
+    public void deleteProduct(Long id) {
+    productRepository.deleteById(id);
+}
+
+    public ProductDTO deleteLogic(Long id) {
+    Product p = productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Producte no trobat"));
+
+    p.setStatus(false);
+    return toDTO(productRepository.save(p));
+}
+
+ 
+    public List<ProductDTO> searchByCondition(Condition condition) {
+    return productRepository
+            .findByConditionAndStatusTrue(condition)
+            .stream()
+            .map(this::toDTO)
+            .toList();
+}
+
+    public List<ProductDTO> orderByRating(String order) {
+    List<Product> products;
+
+    if (order.equalsIgnoreCase("asc")) {
+        products = productRepository.findByStatusTrueOrderByRatingAsc();
+    } else if (order.equalsIgnoreCase("desc")) {
+        products = productRepository.findByStatusTrueOrderByRatingDesc();
+    } else {
+        throw new RuntimeException("El paràmetre order ha de ser 'asc' o 'desc'");
+    }
+
+    return products.stream()
+            .map(this::toDTO)
+            .toList();
+}
+
+ 
+    public List<ProductDTO> filterByRating(BigDecimal min, BigDecimal max, String camp, String order, int limit) {
+
+    List<Product> products = productRepository.filterByRatingRange(min, max);
+
+    Comparator<Product> comparator;
+
+    switch (camp.toLowerCase()) {
+        case "price" -> comparator = Comparator.comparing(Product::getPrice);
+        case "rating" -> comparator = Comparator.comparing(Product::getRating);
+        case "name" -> comparator = Comparator.comparing(Product::getName);
+        default -> throw new RuntimeException("Camp no vàlid: " + camp);
+    }
+
+    if (order.equalsIgnoreCase("desc")) {
+        comparator = comparator.reversed();
+    }
+
+    return products.stream()
+            .sorted(comparator)
+            .limit(limit)
+            .map(this::toDTO)
+            .toList();
+}
+
+
+    public List<ProductDTO> top10NewByRating() {
+    return productRepository.findTop10NewByRating()
+            .stream()
+            .map(this::toDTO)
+            .toList();
+}
+
+   
+    public List<ProductDTO> getProductsPaginated(int page) {
+    Pageable pageable = PageRequest.of(page, 5);
+    return productRepository.findActiveProducts(pageable)
+            .stream()
+            .map(this::toDTO)
+            .toList();
+}
 }
 

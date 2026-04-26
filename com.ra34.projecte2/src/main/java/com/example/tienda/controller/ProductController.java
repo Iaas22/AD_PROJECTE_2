@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.tienda.model.Product;
 import com.example.tienda.service.ProductService;
+import com.example.tienda.model.Condition;
 
 @RestController
 @RequestMapping("/api/products")
@@ -96,4 +98,55 @@ public class ProductController {
     }
 
 
+    @PatchMapping("/{id}/price")
+    public ResponseEntity<?> updatePrice(@PathVariable Long id, @RequestParam Double price) {
+    return ResponseEntity.ok(productService.updatePrice(id, price));
+}
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+    productService.deleteProduct(id);
+    return ResponseEntity.ok("Producte eliminat");
+}
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<?> deleteLogic(@PathVariable Long id) {
+    return ResponseEntity.ok(productService.deleteLogic(id));
+}
+
+    
+    @GetMapping("/search/condition")
+    public ResponseEntity<?> searchByCondition(@RequestParam Condition condition) {
+    return ResponseEntity.ok(productService.searchByCondition(condition));
+}
+
+    @GetMapping("/search/rating-order")
+    public ResponseEntity<?> orderByRating(@RequestParam String order) {
+    return ResponseEntity.ok(productService.orderByRating(order));
+}
+
+
+    @GetMapping("/search/rating-filter")
+    public ResponseEntity<?> filterByRating(
+        @RequestParam BigDecimal ratingMin,
+        @RequestParam BigDecimal ratingMax,
+        @RequestParam String camp,
+        @RequestParam String order,
+        @RequestParam int limit) {
+
+    return ResponseEntity.ok(
+            productService.filterByRating(ratingMin, ratingMax, camp, order, limit)
+    );
+}
+
+    @GetMapping("/search/top10new")
+    public ResponseEntity<?> top10NewByRating() {
+    return ResponseEntity.ok(productService.top10NewByRating());
+}
+
+
+    @GetMapping("/search/paginated")
+    public ResponseEntity<?> getProductsPaginated(@RequestParam(defaultValue = "0") int page) {
+    return ResponseEntity.ok(productService.getProductsPaginated(page));
+}
 }
