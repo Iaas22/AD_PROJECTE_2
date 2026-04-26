@@ -46,4 +46,14 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    // Consulta un customer por id.
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCustomerById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(customerService.getCustomerById(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }
