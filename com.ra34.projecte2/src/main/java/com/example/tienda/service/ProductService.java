@@ -15,6 +15,8 @@ import com.example.tienda.dto.ProductDTO;
 import com.example.tienda.model.Condition;
 import com.example.tienda.model.Product;
 import com.example.tienda.repository.ProductRepository;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import jakarta.transaction.Transactional;
