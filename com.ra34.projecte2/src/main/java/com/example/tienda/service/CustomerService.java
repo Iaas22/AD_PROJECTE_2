@@ -58,4 +58,12 @@ public class CustomerService {
         Customer saved = customerRepository.save(customer);
         return CustomerMapper.toDTO(saved);
     }
+    // Devuelve un customer por id con el email del usuario, nombre, telefono y direcciones
+    @Transactional
+    public CustomerDTO getCustomerById(Long customerId) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new IllegalArgumentException("Customer no trobat"));
+
+        return CustomerMapper.toDTO(customer);
+    }
 }
