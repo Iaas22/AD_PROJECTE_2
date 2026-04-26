@@ -1,5 +1,6 @@
 package com.example.tienda.model;
 
+
 public enum Condition {
     NOU,
     BON_ESTAT,

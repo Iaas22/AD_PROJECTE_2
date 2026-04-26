@@ -8,7 +8,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,7 +62,7 @@ public class ProductService {
         return toDTO(productRepository.save(p));
     }
 
-    // Se convierte producto a productDTO
+
     private ProductDTO toDTO(Product p) {
         ProductDTO dto = new ProductDTO();
         dto.setId(p.getId());
@@ -125,6 +124,7 @@ public int loadCSV(MultipartFile file) throws Exception {
 
     return products.size();
 }
+
 
   public List<ProductDTO> searchByNamePrefix(String prefix) {
       return productRepository

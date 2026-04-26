@@ -25,38 +25,21 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, length = 20)
     private String name;
-
-    @Column(length = 100)
     private String description;
-
-    @Column(nullable = false)
     private Integer stock;
-
-    @Column(nullable = false)
     private BigDecimal price;
-
     private BigDecimal rating;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "product_condition")
     private Condition condition;
-
-    @Column(nullable = false)
     private Boolean status = true;
-
-  
-@CreatedDate
+    @CreatedDate
     private LocalDateTime dataCreated;
-
     @LastModifiedDate
     private LocalDateTime dataUpdated;
 
     public Product() {}
-
-    // getters y setters
 
     public void setId(Long id) {
     this.id = id;
