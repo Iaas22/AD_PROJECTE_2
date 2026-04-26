@@ -14,6 +14,7 @@ public class UserMapper {
     private UserMapper() {
     }
 
+    // Convierte entidad User a DTO simple 
     public static UserDTO toDTO(User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
@@ -21,6 +22,7 @@ public class UserMapper {
         return dto;
     }
 
+    // Convierte los datos que llegan del endpoint a entidad User
     public static User toEntity(CreateUserRequest request) {
         User user = new User();
         user.setEmail(request.getEmail());
@@ -29,6 +31,7 @@ public class UserMapper {
         return user;
     }
 
+    // Crea la entidad Customer usando el mismo request del alta de usuario.
     public static Customer toCustomerEntity(CreateUserRequest request, User user) {
         Customer customer = new Customer();
         customer.setUser(user);
@@ -39,6 +42,7 @@ public class UserMapper {
         return customer;
     }
 
+    // Convierte a DTO detallado para el endpoint de consultar usuario
     public static UserDetailsDTO toDetailsDTO(User user) {
         UserDetailsDTO dto = new UserDetailsDTO();
         dto.setId(user.getId());
@@ -49,6 +53,7 @@ public class UserMapper {
         return dto;
     }
 
+    // Convierte user y roles para mostrar el resultado de quitar roles.
     public static UserRolesDTO toRolesDTO(User user) {
         UserRolesDTO dto = new UserRolesDTO();
         dto.setId(user.getId());

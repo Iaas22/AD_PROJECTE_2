@@ -30,10 +30,12 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customerid;
 
+    // Cada customer pertenece a un unico user (1:1)
     @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "userid", referencedColumnName = "userid", nullable = false, unique = true)
     private User user;
 
+    // Un customer puede tener varias direcciones (1:N)
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Address> addresses = new ArrayList<>();
 
@@ -126,11 +128,13 @@ public class Customer {
     // @OneToMany(mappedBy = "customer")
     // private List<Order> orders;
 
+    // Helper para añadir direccion y dejar bien hecha la relacion en ambos lados.
     public void addAddress(Address address) {
         addresses.add(address);
         address.setCustomer(this);
     }
 
+    // Helper para borrar todas las direcciones sin borrar el customer.
     public void clearAddresses() {
         for (Address address : addresses) {
             address.setCustomer(null);

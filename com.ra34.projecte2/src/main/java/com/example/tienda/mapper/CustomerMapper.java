@@ -12,6 +12,7 @@ public class CustomerMapper {
     private CustomerMapper() {
     }
 
+    // Pasa Customer a CustomerDTO para devolverlo por la API.
     public static CustomerDTO toDTO(Customer customer) {
         CustomerDTO dto = new CustomerDTO();
         dto.setId(customer.getId());
@@ -23,6 +24,7 @@ public class CustomerMapper {
         return dto;
     }
 
+    // Pasa CustomerDTO a entidad Customer (por si se necesita guardar datos).
     public static Customer toEntity(CustomerDTO dto, User user) {
         Customer customer = new Customer();
         customer.setId(dto.getId());
@@ -31,6 +33,7 @@ public class CustomerMapper {
         customer.setLastName(dto.getLastName());
         customer.setPhone(dto.getPhone());
         if (dto.getAddresses() != null) {
+            // Recorre cada direccion del DTO y la añade al customer.
             for (com.example.tienda.dto.AddressDTO addressDTO : dto.getAddresses()) {
                 Address address = AddressMapper.toEntity(addressDTO);
                 customer.addAddress(address);

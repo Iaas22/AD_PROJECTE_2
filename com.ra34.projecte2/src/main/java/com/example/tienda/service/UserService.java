@@ -33,26 +33,33 @@ public class UserService {
     @Autowired
     private RoleRepository roleRepository;
 
+    // Crea user y customer en la misma transaccion para que se guarden juntos
     @Transactional
     public UserDTO createUserWithCustomer(CreateUserRequest request) {
+        // Si no hay un email no se puede crear el usuario.
         if (request.getEmail() == null || request.getEmail().isBlank()) {
             throw new IllegalArgumentException("L'email es obligatori");
         }
+        // Evita usuarios repetidos con el mismo email.
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Ja existeix un usuari amb aquest email");
         }
 
+        // Pasa los datos del request a User.
         User user = UserMapper.toEntity(request);
         User savedUser = userRepository.save(user);
 
+        // Crea el customer enlazado al user
         Customer customer = UserMapper.toCustomerEntity(request, savedUser);
         Customer savedCustomer = customerRepository.save(customer);
 
         savedUser.setCustomer(savedCustomer);
 
+        // Solo devolvemos el DTO de usuario sin password
         return UserMapper.toDTO(savedUser);
     }
 
+    // Busca un usuario por id y devuelve tambien sus datos de customer.
     @Transactional
     public UserDetailsDTO getUserWithCustomer(Long userId) {
         User user = userRepository.findById(userId)
@@ -61,15 +68,18 @@ public class UserService {
         return UserMapper.toDetailsDTO(user);
     }
 
+    // Quita roles al usuario sin borrar los roles de la base de datos.
     @Transactional
     public UserRolesDTO removeRolesFromUser(Long userId, List<Long> roleIds) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Usuari no trobat"));
 
+        // Se necesita al menos un id de rol para quitar.
         if (roleIds == null || roleIds.isEmpty()) {
             throw new IllegalArgumentException("Cal informar la llista d'ids de rols");
         }
 
+        // Cargamos los roles y los quitamos de la lista del usuario.
         Set<Role> rolesToRemove = new HashSet<>(roleRepository.findAllById(roleIds));
         user.getRoles().removeAll(rolesToRemove);
 

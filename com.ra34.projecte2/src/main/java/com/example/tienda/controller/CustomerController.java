@@ -18,6 +18,7 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    // Borra todas las direcciones de un customer usando su id
     @DeleteMapping("/{id}/addresses")
     public ResponseEntity<?> deleteAllAddresses(@PathVariable Long id) {
         try {
@@ -27,6 +28,7 @@ public class CustomerController {
         }
     }
 
+    // Devuelve todos los customers con sus datos principales y direcciones
     @GetMapping
     public ResponseEntity<?> getAllCustomers() {
         return ResponseEntity.ok(customerService.getAllCustomers());
