@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.tienda.dto.request.CreateUserRequest;
 import com.example.tienda.dto.request.RemoveUserRolesRequest;
 import com.example.tienda.service.UserService;
+import org.springframework.web.bind.annotation.PutMapping;
+import com.example.tienda.dto.request.UpdateUserRequest;
 
 @RestController
 @RequestMapping("/api/users")
@@ -47,6 +49,16 @@ public class UserController {
     public ResponseEntity<?> removeRoles(@PathVariable Long id, @RequestBody RemoveUserRolesRequest request) {
         try {
             return ResponseEntity.ok(userService.removeRolesFromUser(id, request.getRoleIds()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+        // Modifica los datos de un usuario y/o su customer.
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
+        try {
+            return ResponseEntity.ok(userService.updateUser(id, request));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

@@ -11,6 +11,7 @@ import com.example.tienda.dto.UserDTO;
 import com.example.tienda.dto.UserDetailsDTO;
 import com.example.tienda.dto.UserRolesDTO;
 import com.example.tienda.dto.request.CreateUserRequest;
+import com.example.tienda.dto.request.UpdateUserRequest;
 import com.example.tienda.mapper.UserMapper;
 import com.example.tienda.model.Customer;
 import com.example.tienda.model.Role;
@@ -18,6 +19,7 @@ import com.example.tienda.model.User;
 import com.example.tienda.repository.CustomerRepository;
 import com.example.tienda.repository.RoleRepository;
 import com.example.tienda.repository.UserRepository;
+import com.example.tienda.dto.request.UpdateUserRequest;
 
 import jakarta.transaction.Transactional;
 
@@ -85,5 +87,44 @@ public class UserService {
 
         User saved = userRepository.save(user);
         return UserMapper.toRolesDTO(saved);
+    }
+
+    // Modifica los datos del usuario o su customer en una misma transaccion.
+    @Transactional
+    public UserDetailsDTO updateUser(Long userId, UpdateUserRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Usuari no trobat"));
+
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            boolean emailUsedByOther = userRepository.findByEmail(request.getEmail())
+                    .filter(u -> !u.getId().equals(userId))
+                    .isPresent();
+            if (emailUsedByOther) {
+                throw new IllegalArgumentException("Ja existeix un usuari amb aquest email");
+            }
+            user.setEmail(request.getEmail());
+        }
+
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            user.setPassword(request.getPassword());
+        }
+
+        userRepository.save(user);
+
+        Customer customer = user.getCustomer();
+        if (customer != null) {
+            if (request.getFirstName() != null && !request.getFirstName().isBlank()) {
+                customer.setFirstName(request.getFirstName());
+            }
+            if (request.getLastName() != null && !request.getLastName().isBlank()) {
+                customer.setLastName(request.getLastName());
+            }
+            if (request.getPhone() != null && !request.getPhone().isBlank()) {
+                customer.setPhone(request.getPhone());
+            }
+            customerRepository.save(customer);
+        }
+
+        return UserMapper.toDetailsDTO(user);
     }
 }
