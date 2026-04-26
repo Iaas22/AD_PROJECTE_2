@@ -135,4 +135,21 @@ public class UserService {
                 .map(UserMapper::toDetailsDTO)
                 .collect(Collectors.toList());
     }
+
+    // Añade roles al usuario sin borrar los que ya tiene
+    @Transactional
+    public UserRolesDTO addRolesToUser(Long userId, List<Long> roleIds) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Usuari no trobat"));
+
+        if (roleIds == null || roleIds.isEmpty()) {
+            throw new IllegalArgumentException("Cal informar la llista d'ids de rols");
+        }
+
+        Set<Role> rolesToAdd = new HashSet<>(roleRepository.findAllById(roleIds));
+        user.getRoles().addAll(rolesToAdd);
+
+        User saved = userRepository.save(user);
+        return UserMapper.toRolesDTO(saved);
+    }
 }
