@@ -8,14 +8,18 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -29,19 +33,23 @@ public class User {
     private Long userid;
     private String email;
     private String password;
-    private Boolean status;
+    private Boolean status = true;
     @CreatedDate
     private LocalDateTime dataCreated;
     @LastModifiedDate
     private LocalDateTime dataUpdated;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "user_roles",
         joinColumns = @JoinColumn(name = "userid", referencedColumnName = "userid"),
-        inverseJoinColumns = @JoinColumn(name = "roleid", referencedColumnName = "id")
+        inverseJoinColumns = @JoinColumn(name = "roleid", referencedColumnName = "roleid")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Customer customer;
 
 
      public void setId(Long id) {
@@ -98,6 +106,14 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
    

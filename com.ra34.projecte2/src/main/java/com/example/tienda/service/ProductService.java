@@ -61,7 +61,7 @@ public class ProductService {
         return toDTO(productRepository.save(p));
     }
 
-    // Se convierte producto a productDTO
+
     private ProductDTO toDTO(Product p) {
         ProductDTO dto = new ProductDTO();
         dto.setId(p.getId());

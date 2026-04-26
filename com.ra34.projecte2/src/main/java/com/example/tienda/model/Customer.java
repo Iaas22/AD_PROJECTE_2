@@ -1,6 +1,8 @@
 package com.example.tienda.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -10,10 +12,12 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -26,9 +30,12 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customerid;
 
-    @OneToOne(optional = false, cascade= CascadeType.PERSIST)
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "userid", referencedColumnName = "userid", nullable = false, unique = true)
     private User user;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Address> addresses = new ArrayList<>();
 
     @Column(name = "firstName")
     private String firstName;
@@ -57,6 +64,14 @@ public class Customer {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
     }
 
     public String getFirstName() {
@@ -105,6 +120,22 @@ public class Customer {
 
     public void setDataUpdated(LocalDateTime dataUpdated) {
         this.dataUpdated = dataUpdated;
+    }
+
+    // Placeholder for Integrant 2 (orders):
+    // @OneToMany(mappedBy = "customer")
+    // private List<Order> orders;
+
+    public void addAddress(Address address) {
+        addresses.add(address);
+        address.setCustomer(this);
+    }
+
+    public void clearAddresses() {
+        for (Address address : addresses) {
+            address.setCustomer(null);
+        }
+        addresses.clear();
     }
 
 }

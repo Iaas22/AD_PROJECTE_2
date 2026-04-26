@@ -25,7 +25,6 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    // Consultar todos los productos
     @GetMapping
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(productService.getAllProducts());
@@ -43,13 +42,13 @@ public class ProductController {
         return ResponseEntity.status(201).body(productService.addProduct(product));
     }
 
-    // Modificar todos los campos, se encuentra por Id
+    // Modificar todos los campos,encontrar por Id
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Product product) {
         return ResponseEntity.ok(productService.updateProduct(id, product));
     }
 
-    // Modificar solo el stock
+    // Modificar el stock
     @PatchMapping("/{id}/stock")
     public ResponseEntity<?> updateStock(@PathVariable Long id, @RequestParam Integer stock) {
         return ResponseEntity.ok(productService.updateStock(id, stock));

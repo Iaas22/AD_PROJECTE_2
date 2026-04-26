@@ -40,12 +40,20 @@ public class Role {
 
     public Role() {}
 
-    public void setIDRole(Long id) {
+    public void setId(Long id) {
         this.roleid = id;
     }
 
-    public Long getIDRole() {
+    public Long getId() {
         return roleid;
+    }
+
+    public void setIDRole(Long id) {
+        setId(id);
+    }
+
+    public Long getIDRole() {
+        return getId();
     }
 
     public void setName(RoleName name) {
