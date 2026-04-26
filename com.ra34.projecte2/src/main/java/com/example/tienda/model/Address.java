@@ -24,6 +24,7 @@ public class Address {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long addressid;
 
+    // Muchas direcciones pueden pertenecer al mismo customer
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerid", referencedColumnName = "customerid", nullable = false)

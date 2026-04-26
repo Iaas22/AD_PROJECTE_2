@@ -8,6 +8,7 @@ public class AddressMapper {
     private AddressMapper() {
     }
 
+    // Convierte Address a AddressDTO para enviar por la API.
     public static AddressDTO toDTO(Address address) {
         AddressDTO dto = new AddressDTO();
         dto.setId(address.getAddressid());
@@ -19,6 +20,7 @@ public class AddressMapper {
         return dto;
     }
 
+    // Convierte AddressDTO a Address para poder guardarlo en BD.
     public static Address toEntity(AddressDTO dto) {
         Address address = new Address();
         address.setAddressid(dto.getId());

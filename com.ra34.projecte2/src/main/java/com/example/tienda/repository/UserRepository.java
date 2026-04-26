@@ -10,7 +10,9 @@ import com.example.tienda.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    // Busca un usuario por email.
     Optional<User> findByEmail(String email);
 
+    // Comprueba si ya existe un email en la BD.
     boolean existsByEmail(String email);
 }

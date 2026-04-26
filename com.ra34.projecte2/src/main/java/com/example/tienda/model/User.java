@@ -39,6 +39,7 @@ public class User {
     @LastModifiedDate
     private LocalDateTime dataUpdated;
 
+    // Relacion N:M con Role,un usuario puede tener varios roles
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "user_roles",
@@ -47,6 +48,7 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
+    // Relacion 1:1 con Customer
     @JsonIgnore
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Customer customer;

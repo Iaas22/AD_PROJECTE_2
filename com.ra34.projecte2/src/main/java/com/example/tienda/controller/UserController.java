@@ -22,6 +22,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    // Crea un usuario nuevo (y su customer) con los datos que llegan en el body.
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody CreateUserRequest request) {
         try {
@@ -31,6 +32,7 @@ public class UserController {
         }
     }
 
+    // Devuelve un usuario por id junto con los datos del customer relacionado.
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
@@ -40,6 +42,7 @@ public class UserController {
         }
     }
 
+    // Quita roles al usuario, pero no borra los roles de la tabla Role.
     @DeleteMapping("/{id}/roles")
     public ResponseEntity<?> removeRoles(@PathVariable Long id, @RequestBody RemoveUserRolesRequest request) {
         try {
