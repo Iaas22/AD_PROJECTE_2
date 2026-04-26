@@ -20,7 +20,6 @@ import com.example.tienda.model.User;
 import com.example.tienda.repository.CustomerRepository;
 import com.example.tienda.repository.RoleRepository;
 import com.example.tienda.repository.UserRepository;
-import com.example.tienda.dto.request.UpdateUserRequest;
 
 import jakarta.transaction.Transactional;
 

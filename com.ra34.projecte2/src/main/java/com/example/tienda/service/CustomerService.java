@@ -6,8 +6,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.tienda.dto.AddressDTO;
 import com.example.tienda.dto.CustomerDTO;
+import com.example.tienda.dto.request.AddAddressesRequest;
+import com.example.tienda.mapper.AddressMapper;
 import com.example.tienda.mapper.CustomerMapper;
+import com.example.tienda.model.Address;
 import com.example.tienda.model.Customer;
 import com.example.tienda.repository.CustomerRepository;
 
@@ -37,5 +41,21 @@ public class CustomerService {
     @Transactional
     public List<CustomerDTO> getAllCustomers() {
         return customerRepository.findAll().stream().map(CustomerMapper::toDTO).collect(Collectors.toList());
+    }
+        
+    
+    // Añade una lista de direcciones a un customer 
+    @Transactional
+    public CustomerDTO addAddressesToCustomer(Long customerId, AddAddressesRequest request) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new IllegalArgumentException("Customer no trobat"));
+
+        for (AddressDTO addressDTO : request.getAddresses()) {
+            Address address = AddressMapper.toEntity(addressDTO);
+            customer.addAddress(address);
+        }
+
+        Customer saved = customerRepository.save(customer);
+        return CustomerMapper.toDTO(saved);
     }
 }
